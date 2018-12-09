@@ -95,7 +95,7 @@ def capture(caprate, session=None):
 
     try:
         while True:
-            result = session.get("http://localhost/session")
+            result = session.get("http://127.0.0.1/session")
             trash = result.content
 
             try:
