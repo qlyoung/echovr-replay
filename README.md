@@ -3,6 +3,8 @@ echovr-replay
 
 Game capture and 2D replay for Echo Arena.
 
+https://my.mixtape.moe/zgjzid.mp4
+
 Installation
 ============
 For `record.py` you need:
