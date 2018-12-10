@@ -165,22 +165,35 @@ if __name__ == "__main__":
     parser.add_argument(
         "-s", "--show", type=str, help="Show frames from save file (e.g. '-s 0,40,100')"
     )
+    parser.add_argument(
+        "-d",
+        "--dump",
+        help="Dump save file as raw frame array",
+        default=False,
+        action="store_true",
+    )
     args = parser.parse_args()
     if args.load is not None:
         caprate, nframes, frames = load_game(args.load)
-        print("Loaded '{}'".format(args.load))
-        print("Framerate: {}".format(caprate))
-        print("Frames: {}".format(nframes))
-        if nframes != len(frames):
-            print(
-                "[!] Save file claims it has {} frames, but got {}".format(
-                    nframes, len(frames)
+        # dump a brief summary if we don't have an action
+        if args.show is None and args.dump is None:
+            print("Loaded '{}'".format(args.load))
+            print("Framerate: {}".format(caprate))
+            print("Frames: {}".format(nframes))
+            if nframes != len(frames):
+                print(
+                    "[!] Save file claims it has {} frames, but got {}".format(
+                        nframes, len(frames)
+                    )
                 )
-            )
+        # dump specified frames if we were given some
         if args.show is not None:
             showframes = list(map(int, args.show.split(",")))
             for fidx in showframes:
                 pprint.pprint(frames[fidx])
+        # dump all frames if we were asked to
+        if args.dump:
+            print(json.dumps(frames))
     else:
         caprate = args.framerate
         capture(caprate)
