@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import pygame, sys
-import record
 import json
 from pygame.locals import *
 import time
 import argparse
+import gzip
 
 # globals
 BLACK = (0, 0, 0)
@@ -88,7 +88,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("file", type=str, help="save file to play back")
     args = parser.parse_args()
-    caprate, nframes, frames = record.load_game(args.file)
+    with gzip.open(args.file, "r") as sgf:
+        savedgame = json.load(sgf)
+
+    caprate = savedgame["caprate"]
+    nframes = savedgame["nframes"]
+    frames = savedgame["frames"]
 
     pygame.init()
 

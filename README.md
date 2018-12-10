@@ -53,29 +53,35 @@ circle. Goal positions are approximate.
 Save Format
 ===========
 
-The save format is very simple. It is a gzipped text file. When uncompressed it
-has the following format:
+The save format is very simple. It is a gzipped plaintext JSON file, UTF-8
+encoded. The JSON has the following format:
 
 ```
-<caprate><LF>
-<nframes><LF>
-<frame 0><LF>
-<frame 1><LF>
-...
-<frame N><LF>
+{
+    "caprate": <float>,
+    "nframes": <int>,
+    "frames": [
+        <frame0>,
+        <frame1>,
+        ...
+        <frameN>
+    ]
+}
 ```
 
-- `caprate` is a floating point value encoded as a string that gives the capture rate of the save
-- `nframes` is an integer value encoded as a string 
-- `frame N` is the complete Nth API response encoded as a minified JSON string
+Each frame is exactly as it was retrieved from the Echo VR API. The `frames`
+array is time-ordered.
 
-Text encoding is UTF-8.
- 
+- `caprate` is the capture rate of the save
+- `nframes` is the length of the `frames` array
+- `frameN` is the complete Nth API response
+
 Reading a Save File
 -------------------
 
 ```
-import record
+import gzip
 
-caprate, nframes, frames = load_game("mysavefile.gz")
+with gzip.open("mysavefile.json.gz", "r") as f:
+    savedgame = json.load(f)
 ```

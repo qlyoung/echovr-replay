@@ -12,21 +12,21 @@ import pprint
 
 def save_game(frames, caprate):
     """
-    Save time-ordered list of JSON frames as a gzipped text file.
+    Save time-ordered list of API frames as a gzipped json file.
 
     Format:
-        <caprate><LF>
-        <nframes><LF>
-        <frame 0><LF>
-        <frame 1><LF>
-        ...
-        <frame N><LF>
+        {
+            "caprate": <float>,
+            "nframes": <int>,
+            "frames": [
+                <frame0>,
+                <frame1>,
+                ...
+                <frameN>
+            ]
+        }
 
-    LF = linefeed = 0x0A
-    caprate = float
-    nframes = int
-
-    Each frame is encoded as a minified JSON string.
+    Each frame is exactly as it was retrieved from the Echo VR API.
 
     :param frames: list of time-ordered JSON frames
     :param caprate: capture rate of frames in hz
@@ -39,37 +39,14 @@ def save_game(frames, caprate):
             fname += player["name"] + "_"
         fname += "VS_"
     # cut the last _VS_ out of the name
-    fname = fname[:-4] + ".gz"
+    fname = fname[:-4] + ".json.gz"
+
+    out = {"caprate": caprate, "nframes": len(frames), "frames": frames}
+
     with gzip.open(fname, mode="w+") as save:
-        save.write(str(caprate).encode(encoding="UTF-8"))
-        save.write(b"\n")
-        save.write(str(len(frames)).encode(encoding="UTF-8"))
-        save.write(b"\n")
-        for frame in frames:
-            save.write(json.dumps(frame).encode(encoding="UTF-8"))
-            save.write(b"\n")
+        save.write(json.dumps(out).encode(encoding="UTF-8"))
 
     return fname
-
-
-def load_game(savefilename):
-    """
-    Read a saved game file and return the saved game.
-
-    :param savefilename: path to save file
-    :return: 3-tuple (caprate, nframes, frames) where caprate is the framerate
-    in hz, nframes is the number of frames and frames is a list of time-ordered
-    JSON frames
-    """
-
-    with gzip.open(savefilename, mode="r") as savefile:
-        contents = savefile.read().decode(encoding="UTF-8")
-        split = contents.split("\n")[:-1]
-        caprate = float(split[0])
-        nframes = int(split[1])
-        frames = list(map(json.loads, split[2:]))
-
-    return (caprate, nframes, frames)
 
 
 def capture(caprate, session=None):
@@ -161,39 +138,7 @@ if __name__ == "__main__":
         help="set capture framerate",
         default=CAPRATE_HZ,
     )
-    parser.add_argument("-l", "--load", type=str, help="Load save file")
-    parser.add_argument(
-        "-s", "--show", type=str, help="Show frames from save file (e.g. '-s 0,40,100')"
-    )
-    parser.add_argument(
-        "-d",
-        "--dump",
-        help="Dump save file as raw frame array",
-        default=False,
-        action="store_true",
-    )
     args = parser.parse_args()
-    if args.load is not None:
-        caprate, nframes, frames = load_game(args.load)
-        # dump a brief summary if we don't have an action
-        if args.show is None and args.dump is None:
-            print("Loaded '{}'".format(args.load))
-            print("Framerate: {}".format(caprate))
-            print("Frames: {}".format(nframes))
-            if nframes != len(frames):
-                print(
-                    "[!] Save file claims it has {} frames, but got {}".format(
-                        nframes, len(frames)
-                    )
-                )
-        # dump specified frames if we were given some
-        if args.show is not None:
-            showframes = list(map(int, args.show.split(",")))
-            for fidx in showframes:
-                pprint.pprint(frames[fidx])
-        # dump all frames if we were asked to
-        if args.dump:
-            print(json.dumps(frames))
-    else:
-        caprate = args.framerate
-        capture(caprate)
+
+    caprate = args.framerate
+    capture(caprate)

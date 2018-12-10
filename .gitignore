@@ -1,2 +1,4 @@
 /*.pyc
 /*.gz
+/*__pycache__
+/*.swp
