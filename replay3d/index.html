@@ -11,7 +11,7 @@
         <script>
             /* load frames */
             var request = new XMLHttpRequest();
-            request.open("GET", "../data/game.json", false);
+            request.open("GET", "data/game.json", false);
             request.send(null)
             var savedgame = JSON.parse(request.responseText);
             var frames = savedgame['frames'];
