@@ -1,18 +1,3 @@
-var scene, camera, renderer, mesh;
-var ambient, light;
-var savedgame, frames;
-
-var loadingScreen = {
-    scene: new THREE.Scene(),
-    camera: new THREE.PerspectiveCamera(90, 1280/720, 0.1, 100),
-    box: new THREE.Mesh(
-        new THREE.BoxGeometry(0.5,0.5,0.5),
-        new THREE.MeshBasicMaterial({ color:0x4444ff })
-    )
-};
-var loadingManager = null;
-
-// Models index
 var models = {
     arena: {
         obj:"models/map.obj",
@@ -28,11 +13,15 @@ var models = {
     }
 };
 
-// Meshes index
-var meshes = {};
+/* three globals */
+var scene, camera, renderer, mesh;
 
-orangePlayers = []
-bluePlayers = []
+/* our globals */
+var ambient, light;
+var savedgame;
+var meshes = {};
+orangePlayers = [];
+bluePlayers = [];
 
 function init(){
     //Create Scene
@@ -56,13 +45,8 @@ function init(){
     light.position.set(0, -35, 30);
     scene.add( light );
 
-    //Loading Screen
-    loadingScreen.box.position.set(0,0,5);
-    loadingScreen.camera.lookAt(loadingScreen.box.position);
-    loadingScreen.scene.add(loadingScreen.box);
-
     //Object Loading Manager
-    loadingManager = new THREE.LoadingManager();
+    var loadingManager = new THREE.LoadingManager();
     loadingManager.onProgress = function(item, loaded, total){
        //console.log(item, loaded, total);
     };
@@ -75,9 +59,7 @@ function init(){
             objLoader.load(models[key].obj, function(mesh){
                 mesh.traverse(function(node){
                     if( node instanceof THREE.Mesh ){
-			console.log(key);
 			if (key == "arena") {
-				console.log("loading arena");
                         	node.material = new THREE.MeshLambertMaterial({color: 0x00ff00, transparent: true, opacity: 0.1, wireframe: true, wireframeLinewidth: 0.1});
                         	node.scale.set(.12,.12,.12);
 			}
@@ -92,31 +74,33 @@ function init(){
                     }
                 });
                 models[key].mesh = mesh;
-		console.log("models[" + key + "].mesh is ");
-		console.log(models[key].mesh);
             });
         })(_key);
     }
 
-    // this code runs in parallel to the loading code above; while we wait, lets load the rest of our resources
+    /* FIXME: do this in another thread */
     var request = new XMLHttpRequest();
     request.open("GET", "../data/game.json", false);
     request.send(null)
-    savedGame = JSON.parse(request.responseText);
-    frames = savedGame['frames'];
+    savedgame = JSON.parse(request.responseText);
+    savedgame['frames'];
+
+    /* Show a loading screen */
+    var loadingScreen = {
+        scene: new THREE.Scene(),
+        camera: new THREE.PerspectiveCamera(90, window.innerWidth/window.innerHeight, 0.1, 100),
+        box: new THREE.Mesh(
+            new THREE.BoxGeometry(0.5,0.5,0.5),
+            new THREE.MeshBasicMaterial({ color:0x4444ff })
+        )
+    };
+
+    loadingScreen.box.position.set(0,0,5);
+    loadingScreen.camera.lookAt(loadingScreen.box.position);
+    loadingScreen.scene.add(loadingScreen.box);
 }
 
-function setPlayerPosition(player, framepos) {
-    player.position.x = framepos[2];
-    player.position.y = framepos[0];
-    player.position.z = framepos[1];
-}
-
-// Runs when all resources are loaded
 function onResourcesLoaded(){
-    RESOURCES_LOADED = true;
-
-    // now that our resources have loaded, lets initialize the meshes dictionary...
     meshes["echo0"] = models.echoBlue.mesh.clone();
     meshes["echo1"] = models.echoBlue.mesh.clone();
     meshes["echo2"] = models.echoBlue.mesh.clone();
@@ -125,12 +109,6 @@ function onResourcesLoaded(){
     meshes["echo5"] = models.echoOrange.mesh.clone();
     meshes["arena"] = models.arena.mesh.clone();
 
-    console.log("meshes[echo0] is");
-    console.log(meshes["echo0"]);
-    console.log("meshes[echo3] is");
-    console.log(meshes["echo3"]);
-
-    // ..create and add the players...
     orangePlayers.push(meshes["echo0"]);
     orangePlayers.push(meshes["echo1"]);
     orangePlayers.push(meshes["echo2"]);
@@ -142,15 +120,20 @@ function onResourcesLoaded(){
         scene.add(bluePlayers[i]);
     }
 
-    // ...reposition and add the arena...
+
     meshes["arena"].position.set(0, 0, 0);
     scene.add(meshes["arena"]);
 
-    // and finally start rendering
     run();
 }
 
 function run(){
+
+    var setPlayerPosition = function (player, framepos) {
+    	player.position.x = framepos[2];
+    	player.position.y = framepos[0];
+    	player.position.z = framepos[1];
+    }
 
     /* frame index */
     var idx = 0;
@@ -158,7 +141,7 @@ function run(){
     var anim = function () {
         requestAnimationFrame( anim );
 
-        frame = frames[idx];
+        frame = savedgame.frames[idx];
         idx += 1;
 
         for (var i = 0; i < 3; i++) {
@@ -171,7 +154,6 @@ function run(){
 
 
     anim();
-    return;
 }
 
 window.onload = init;
