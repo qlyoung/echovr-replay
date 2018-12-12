@@ -14,7 +14,7 @@ var models = {
 };
 
 /* three globals */
-var scene, camera, renderer, mesh;
+var scene, camera, controls, renderer, mesh;
 
 /* our globals */
 var ambient, light;
@@ -29,8 +29,10 @@ function init() {
 
     //Create Camera
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 1000);
+    controls = new THREE.OrbitControls(camera);
     camera.position.set(80, 25, 80);
     camera.lookAt(0, -10, 0);
+    controls.update();
 
     //Create Renderer
     renderer = new THREE.WebGLRenderer();
@@ -47,9 +49,6 @@ function init() {
 
     //Object Loading Manager
     var loadingManager = new THREE.LoadingManager();
-    loadingManager.onProgress = function(item, loaded, total) {
-        //console.log(item, loaded, total);
-    };
     loadingManager.onLoad = onResourcesLoaded;
 
     // Start loading meshes, and when complete, call onResourcesLoaded
@@ -166,6 +165,8 @@ function run() {
             setPlayerPosition(orangePlayers[i], frame.teams[0].players[i].position);
             setPlayerPosition(bluePlayers[i], frame.teams[1].players[i].position);
         }
+
+        controls.update();
 
         renderer.render(scene, camera);
     };
