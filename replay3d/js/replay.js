@@ -116,7 +116,7 @@ function init() {
                             node.material.opacity = .15,
                             node.castShadow = true;
                             node.receiveShadow = true;
-                            node.scale.set(1.5, 1.5, 1.5);
+                            node.scale.set(1, 1, 1);
                         } else if (key == "echoBlue") {
                             node.material = new THREE.MeshLambertMaterial({
                                 color: 0x5333ff,
@@ -138,11 +138,11 @@ function init() {
                         } else if (key == "floor") {
                             node.material = floorMat;
                             node.receiveShadow = true;
-                            node.scale.set(1.5, 1.5, 1.5);
+                            node.scale.set(1, 1, 1);
                         } else if (key == "floorOutline") {
                             node.material = outlineMat;
                             node.receiveShadow = true;
-                            node.scale.set(1.5, 1.5, 1.5);
+                            node.scale.set(1, 1, 1);
                         }
 
                     }
@@ -199,12 +199,12 @@ function onResourcesLoaded() {
     }
 
 
-    meshes["arena"].position.set(18, -4, 2);
+    meshes["arena"].position.set(0, -4, 2);
     meshes["arena"].doubleSided = true;
     scene.add(meshes["arena"]);
-    meshes["floor"].position.set(18,-4, 2);
+    meshes["floor"].position.set(0,-4, 2);
     scene.add(meshes["floor"]);
-    meshes["floorOutline"].position.set(18,-4, 2);
+    meshes["floorOutline"].position.set(0,-4, 2);
     scene.add(meshes["floorOutline"]);
     run();
 }
