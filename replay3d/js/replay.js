@@ -34,8 +34,8 @@ bluePlayers = [];
 function init() {
     //Create Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1b1b1e);
-    //  scene.background = new THREE.Color( 0x02020B );
+    scene.background = new THREE.Color( 0x1b1b1e);
+  //  scene.background = new THREE.Color( 0x02020B );
 
     //Create Camera
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 1000);
@@ -45,9 +45,7 @@ function init() {
     controls.update();
 
     //Create Renderer
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
+    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     renderer.sortObjects = false;
@@ -57,16 +55,16 @@ function init() {
     ambient.position.set(0, 10, 0);
     scene.add(ambient);
 
-    light = new THREE.PointLight(0xffffff, 2, 10000);
+    light = new THREE.PointLight(0xffffff, 2, 100);
     light.position.set(0, -35, 30);
     scene.add(light);
 
     orangeLight = new THREE.PointLight(0xf76707, 2, 100);
-    orangeLight.position.set(60, 0, 0);
+    orangeLight.position.set(60, 0,0);
     scene.add(orangeLight);
 
     blueLight = new THREE.PointLight(0x1c7ed6, 2, 100);
-    blueLight.position.set(-30, 0, 0);
+    blueLight.position.set(-20, 0,0);
     scene.add(blueLight);
 
     //Object Loading Manager
@@ -115,8 +113,8 @@ function init() {
                         if (key == "arena") {
                             node.material = arenaMat;
                             node.material.transparent = true,
-                                node.material.opacity = .15,
-                                node.castShadow = true;
+                            node.material.opacity = .15,
+                            node.castShadow = true;
                             node.receiveShadow = true;
                             node.scale.set(1.5, 1.5, 1.5);
                         } else if (key == "echoBlue") {
@@ -156,7 +154,7 @@ function init() {
 
     /* FIXME: do this in another thread */
     var request = new XMLHttpRequest();
-    request.open("GET", "data/game.json", false);
+    request.open("GET", "data/bitches.json", false);
     request.send(null)
     savedgame = JSON.parse(request.responseText);
     savedgame['frames'];
@@ -201,12 +199,12 @@ function onResourcesLoaded() {
     }
 
 
-    meshes["arena"].position.set(20, 4, -2);
+    meshes["arena"].position.set(18, -4, 2);
     meshes["arena"].doubleSided = true;
     scene.add(meshes["arena"]);
-    meshes["floor"].position.set(20, 12, -2);
+    meshes["floor"].position.set(18,-4, 2);
     scene.add(meshes["floor"]);
-    meshes["floorOutline"].position.set(20, 12, -2);
+    meshes["floorOutline"].position.set(18,-4, 2);
     scene.add(meshes["floorOutline"]);
     run();
 }
