@@ -34,8 +34,8 @@ bluePlayers = [];
 function init() {
     //Create Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x1b1b1e);
-  //  scene.background = new THREE.Color( 0x02020B );
+    scene.background = new THREE.Color(0x1b1b1e);
+    //  scene.background = new THREE.Color( 0x02020B );
 
     //Create Camera
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 1000);
@@ -45,7 +45,9 @@ function init() {
     controls.update();
 
     //Create Renderer
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     renderer.sortObjects = false;
@@ -60,11 +62,11 @@ function init() {
     scene.add(light);
 
     orangeLight = new THREE.PointLight(0xf76707, 2, 100);
-    orangeLight.position.set(60, 0,0);
+    orangeLight.position.set(60, 0, 0);
     scene.add(orangeLight);
 
     blueLight = new THREE.PointLight(0x1c7ed6, 2, 100);
-    blueLight.position.set(-30, 0,0);
+    blueLight.position.set(-30, 0, 0);
     scene.add(blueLight);
 
     //Object Loading Manager
@@ -113,8 +115,8 @@ function init() {
                         if (key == "arena") {
                             node.material = arenaMat;
                             node.material.transparent = true,
-                            node.material.opacity = .15,
-                            node.castShadow = true;
+                                node.material.opacity = .15,
+                                node.castShadow = true;
                             node.receiveShadow = true;
                             node.scale.set(1.5, 1.5, 1.5);
                         } else if (key == "echoBlue") {
