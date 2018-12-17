@@ -154,7 +154,7 @@ function init() {
 
     /* FIXME: do this in another thread */
     var request = new XMLHttpRequest();
-    request.open("GET", "data/bitches.json", false);
+    request.open("GET", "data/game.json", false);
     request.send(null)
     savedgame = JSON.parse(request.responseText);
     savedgame['frames'];
