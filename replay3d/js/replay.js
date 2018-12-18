@@ -154,7 +154,7 @@ function init() {
 
     /* FIXME: do this in another thread */
     var request = new XMLHttpRequest();
-    request.open("GET", "data/bitch.json", false);
+    request.open("GET", "data/game.json", false);
     request.send(null)
     savedgame = JSON.parse(request.responseText);
     savedgame['frames'];
@@ -193,7 +193,7 @@ function onResourcesLoaded() {
     bluePlayers.push(meshes["echo3"]);
     bluePlayers.push(meshes["echo4"]);
     bluePlayers.push(meshes["echo5"]);
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i    < 3; i++) {
         scene.add(orangePlayers[i]);
         scene.add(bluePlayers[i]);
     }
