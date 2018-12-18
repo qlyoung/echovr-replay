@@ -40,8 +40,8 @@ function init() {
     //Create Camera
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 1000);
     controls = new THREE.OrbitControls(camera);
-    camera.position.set(200, 25, 200);
-    camera.lookAt(50, 0, 0);
+    camera.position.set(200, 100, 200);
+    camera.lookAt(0, 0, 0);
     controls.update();
 
     //Create Renderer
@@ -154,7 +154,7 @@ function init() {
 
     /* FIXME: do this in another thread */
     var request = new XMLHttpRequest();
-    request.open("GET", "data/game.json", false);
+    request.open("GET", "data/bitch.json", false);
     request.send(null)
     savedgame = JSON.parse(request.responseText);
     savedgame['frames'];
@@ -199,12 +199,12 @@ function onResourcesLoaded() {
     }
 
 
-    meshes["arena"].position.set(0, -4, 2);
+    meshes["arena"].position.set(-1,-2.5,0);
     meshes["arena"].doubleSided = true;
     scene.add(meshes["arena"]);
-    meshes["floor"].position.set(0,-4, 2);
+    meshes["floor"].position.set(-1,-2.5,0);
     scene.add(meshes["floor"]);
-    meshes["floorOutline"].position.set(0,-4, 2);
+    meshes["floorOutline"].position.set(-1,-2.5,0);
     scene.add(meshes["floorOutline"]);
     run();
 }
@@ -213,8 +213,8 @@ function run() {
 
     var setPlayerPosition = function(player, framepos) {
         player.position.x = framepos[2];
-        player.position.y = framepos[0];
-        player.position.z = framepos[1];
+        player.position.y = framepos[1];
+        player.position.z = framepos[0];
     }
 
     /* frame index */
@@ -222,6 +222,7 @@ function run() {
 
     var anim = function() {
         requestAnimationFrame(anim);
+
 
         frame = savedgame.frames[idx];
         idx += 1;
