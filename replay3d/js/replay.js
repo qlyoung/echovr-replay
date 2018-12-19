@@ -18,6 +18,10 @@ var models = {
     floorOutline: {
         obj: "models/floorOutline.obj",
         mesh: null
+    },
+    trans: {
+        obj: "models/transparencys.obj",
+        mesh: null
     }
 };
 
@@ -103,6 +107,10 @@ function init() {
         reflectivity: .2,
     });
 
+    var transparentMat = new THREE.MeshPhysicalMaterial({
+        color: 0xced4da,
+    });
+
     // Start loading meshes, and when complete, call onResourcesLoaded
     var objLoader = new THREE.OBJLoader(loadingManager);
     for (var _key in models) {
@@ -141,6 +149,12 @@ function init() {
                             node.scale.set(1, 1, 1);
                         } else if (key == "floorOutline") {
                             node.material = outlineMat;
+                            node.receiveShadow = true;
+                            node.scale.set(1, 1, 1);
+                        } else if (key == "trans") {
+                            node.material = transparentMat;
+                            node.material.transparent = true,
+                            node.material.opacity = .15,
                             node.receiveShadow = true;
                             node.scale.set(1, 1, 1);
                         }
@@ -184,6 +198,7 @@ function onResourcesLoaded() {
     meshes["echo4"] = models.echoOrange.mesh.clone();
     meshes["echo5"] = models.echoOrange.mesh.clone();
     meshes["arena"] = models.arena.mesh.clone();
+    meshes["trans"] = models.trans.mesh.clone();
     meshes["floor"] = models.floor.mesh.clone();
     meshes["floorOutline"] = models.floorOutline.mesh.clone();
 
@@ -206,6 +221,8 @@ function onResourcesLoaded() {
     scene.add(meshes["floor"]);
     meshes["floorOutline"].position.set(-1,-2.5,0);
     scene.add(meshes["floorOutline"]);
+    meshes["trans"].position.set(-1,-2.5,0);
+    scene.add(meshes["trans"]);
     run();
 }
 
