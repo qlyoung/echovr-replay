@@ -223,15 +223,45 @@ function onResourcesLoaded() {
     scene.add(meshes["floorOutline"]);
     meshes["trans"].position.set(-1,-2.5,0);
     scene.add(meshes["trans"]);
+
     run();
 }
 
 function run() {
 
-    var setPlayerPosition = function(player, framepos) {
-        player.position.x = framepos[2];
-        player.position.y = framepos[1];
-        player.position.z = framepos[0];
+    var ac = 0xff0000;
+    var al = 2;
+    var ad = new THREE.Vector3(0, 1, 0);
+    var ao = new THREE.Vector3(0, 0, 0);
+
+    for (var i = 0; i < 3; i++) {
+	orangePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
+	bluePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
+	scene.add(orangePlayers[i]['arrow']);
+	scene.add(bluePlayers[i]['arrow']);
+    }
+
+    /* Transform Echo VR coords to Three coords */
+    var coordTransform = function(evr_coord) {
+	var tf = [evr_coord[2], evr_coord[1], evr_coord[0]];
+	return tf;
+    }
+
+    var setPlayerPosition = function(player, pos) {
+	var ptf = coordTransform(pos);
+	player.position.fromArray(ptf)
+    }
+
+    var updateArrow = function(arrow, pos, dir) {
+	var ptf = coordTransform(pos);
+	arrow.position.fromArray(ptf);
+	var dtf = coordTransform(dir);
+	arrow.setDirection(new THREE.Vector3(dtf[0], dtf[1], dtf[2]));
+    }
+
+    var updatePlayer = function(player, pf) {
+	setPlayerPosition(player, pf.position);
+	updateArrow(player.arrow, pf.position, pf.forward);
     }
 
     /* frame index */
@@ -245,8 +275,8 @@ function run() {
         idx += 1;
 
         for (var i = 0; i < 3; i++) {
-            setPlayerPosition(orangePlayers[i], frame.teams[0].players[i].position);
-            setPlayerPosition(bluePlayers[i], frame.teams[1].players[i].position);
+            updatePlayer(orangePlayers[i], frame.teams[0].players[i]);
+            updatePlayer(bluePlayers[i], frame.teams[1].players[i]);
         }
 
         controls.update();
