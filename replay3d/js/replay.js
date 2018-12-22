@@ -38,8 +38,8 @@ bluePlayers = [];
 function init() {
     //Create Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x1b1b1e);
-  //  scene.background = new THREE.Color( 0x02020B );
+    scene.background = new THREE.Color(0x1b1b1e);
+    //  scene.background = new THREE.Color( 0x02020B );
 
     //Create Camera
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 1000);
@@ -49,7 +49,9 @@ function init() {
     controls.update();
 
     //Create Renderer
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     renderer.sortObjects = false;
@@ -64,11 +66,11 @@ function init() {
     scene.add(light);
 
     orangeLight = new THREE.PointLight(0xf76707, 2, 100);
-    orangeLight.position.set(60, 0,0);
+    orangeLight.position.set(60, 0, 0);
     scene.add(orangeLight);
 
     blueLight = new THREE.PointLight(0x1c7ed6, 2, 100);
-    blueLight.position.set(-20, 0,0);
+    blueLight.position.set(-20, 0, 0);
     scene.add(blueLight);
 
     //Object Loading Manager
@@ -121,8 +123,8 @@ function init() {
                         if (key == "arena") {
                             node.material = arenaMat;
                             node.material.transparent = true,
-                            node.material.opacity = .15,
-                            node.castShadow = true;
+                                node.material.opacity = .15,
+                                node.castShadow = true;
                             node.receiveShadow = true;
                             node.scale.set(1, 1, 1);
                         } else if (key == "echoBlue") {
@@ -154,8 +156,8 @@ function init() {
                         } else if (key == "trans") {
                             node.material = transparentMat;
                             node.material.transparent = true,
-                            node.material.opacity = .15,
-                            node.receiveShadow = true;
+                                node.material.opacity = .15,
+                                node.receiveShadow = true;
                             node.scale.set(1, 1, 1);
                         }
 
@@ -208,20 +210,20 @@ function onResourcesLoaded() {
     bluePlayers.push(meshes["echo3"]);
     bluePlayers.push(meshes["echo4"]);
     bluePlayers.push(meshes["echo5"]);
-    for (var i = 0; i    < 3; i++) {
+    for (var i = 0; i < 3; i++) {
         scene.add(orangePlayers[i]);
         scene.add(bluePlayers[i]);
     }
 
 
-    meshes["arena"].position.set(-1,-2.5,0);
+    meshes["arena"].position.set(-1, -2.5, 0);
     meshes["arena"].doubleSided = true;
     scene.add(meshes["arena"]);
-    meshes["floor"].position.set(-1,-2.5,0);
+    meshes["floor"].position.set(-1, -2.5, 0);
     scene.add(meshes["floor"]);
-    meshes["floorOutline"].position.set(-1,-2.5,0);
+    meshes["floorOutline"].position.set(-1, -2.5, 0);
     scene.add(meshes["floorOutline"]);
-    meshes["trans"].position.set(-1,-2.5,0);
+    meshes["trans"].position.set(-1, -2.5, 0);
     scene.add(meshes["trans"]);
 
     run();
@@ -235,33 +237,33 @@ function run() {
     var ao = new THREE.Vector3(0, 0, 0);
 
     for (var i = 0; i < 3; i++) {
-	orangePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
-	bluePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
-	scene.add(orangePlayers[i]['arrow']);
-	scene.add(bluePlayers[i]['arrow']);
+        orangePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
+        bluePlayers[i]['arrow'] = new THREE.ArrowHelper(ad, ao, al, ac);
+        scene.add(orangePlayers[i]['arrow']);
+        scene.add(bluePlayers[i]['arrow']);
     }
 
     /* Transform Echo VR coords to Three coords */
     var coordTransform = function(evr_coord) {
-	var tf = [evr_coord[2], evr_coord[1], evr_coord[0]];
-	return tf;
+        var tf = [evr_coord[2], evr_coord[1], evr_coord[0]];
+        return tf;
     }
 
     var setPlayerPosition = function(player, pos) {
-	var ptf = coordTransform(pos);
-	player.position.fromArray(ptf)
+        var ptf = coordTransform(pos);
+        player.position.fromArray(ptf)
     }
 
     var updateArrow = function(arrow, pos, dir) {
-	var ptf = coordTransform(pos);
-	arrow.position.fromArray(ptf);
-	var dtf = coordTransform(dir);
-	arrow.setDirection(new THREE.Vector3(dtf[0], dtf[1], dtf[2]));
+        var ptf = coordTransform(pos);
+        arrow.position.fromArray(ptf);
+        var dtf = coordTransform(dir);
+        arrow.setDirection(new THREE.Vector3(dtf[0], dtf[1], dtf[2]));
     }
 
     var updatePlayer = function(player, pf) {
-	setPlayerPosition(player, pf.position);
-	updateArrow(player.arrow, pf.position, pf.forward);
+        setPlayerPosition(player, pf.position);
+        updateArrow(player.arrow, pf.position, pf.forward);
     }
 
     /* frame index */
