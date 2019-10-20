@@ -67,21 +67,29 @@ def capture(caprate, session=None):
     clock0 = 0
     actual_caprate = caprate
     lastclock = 0
+    connected = False
 
     recordstates = ["playing", "score", "round_start"]
 
     try:
         while True:
-            result = session.get("http://127.0.0.1/session")
-            trash = result.content
+            try:
+                result = session.get("http://127.0.0.1/session")
+                _ = result.content
+            except ConnectionError:
+                print("Couldn't connect to Echo client")
+                exit()
 
             try:
-                # ignore cute null byte
                 frame = json.loads(result.text)
                 laststate = state
                 state = frame["game_status"]
             except:
                 continue
+
+            if not connected:
+                connected = True
+                print("Connected to Echo VR")
 
             if state == "post_match":
                 if not saved:
