@@ -77,7 +77,7 @@ def capture(caprate, session=None):
 
             try:
                 # ignore cute null byte
-                frame = json.loads(result.text[:-1])
+                frame = json.loads(result.text)
                 laststate = state
                 state = frame["game_status"]
             except:
