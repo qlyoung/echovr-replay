@@ -117,12 +117,13 @@ def capture(caprate, session=None):
                     framecount += 1
                     actual_caprate = float(framecount) / (time.time() - clock0)
                     frames.append(frame)
-                    sys.stdout.write(
-                        "\rCaptured frame {} ({:.2f} fps)".format(
-                            framecount, actual_caprate
+                    if (framecount % 3) == 0:
+                        sys.stdout.write(
+                            "\rCaptured frame {} ({:.2f} fps)".format(
+                                framecount, actual_caprate
+                            )
                         )
-                    )
-                    sys.stdout.flush()
+                        sys.stdout.flush()
 
             if state != laststate:
                 print("\n{} -> {}".format(laststate, state))
