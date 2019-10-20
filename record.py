@@ -51,6 +51,7 @@ def save_game(frames, caprate):
 
     return fname
 
+
 class RecordState(object):
     frames = []
     saved = True
@@ -65,9 +66,9 @@ class RecordState(object):
 
     def __init__(self, caprate):
         self.caprate = caprate
-        self.actual_caprate = self.caprate;
+        self.actual_caprate = self.caprate
 
-    
+
 async def rx_frame(session, state):
     try:
         resp = await session.get("http://127.0.0.1/session")
@@ -114,7 +115,9 @@ async def rx_frame(session, state):
         if state.elapsed >= 1.0 / caprate - 0.001:
             state.lastclock = time.time()
             state.framecount += 1
-            state.actual_caprate = float(state.framecount) / (time.time() - state.clock0)
+            state.actual_caprate = float(state.framecount) / (
+                time.time() - state.clock0
+            )
             state.frames.append(frame)
             if (state.framecount % 3) == 0:
                 sys.stdout.write(
@@ -137,7 +140,12 @@ async def capture(state, session=None):
     try:
         while True:
             try:
-                await asyncio.gather(*[asyncio.create_task(rx_frame(session, state)) for i in range(1, 5)])
+                await asyncio.gather(
+                    *[
+                        asyncio.create_task(rx_frame(session, state))
+                        for i in range(1, 5)
+                    ]
+                )
             except ConnectionError:
                 print("Couldn't connect to Echo client")
                 exit()
